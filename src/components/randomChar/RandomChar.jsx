@@ -18,7 +18,7 @@ class RandomChar extends Component{
     }
 
     marvelService = new MarvelService()
-    
+
     componentDidMount() {
         this.updateChar()
     }
@@ -30,8 +30,14 @@ class RandomChar extends Component{
             loading: false})
     }
 
+        onCharLoading = (char) => {
+          this.setState({
+            char,
+            loading: true})
+    }
     updateChar = () =>{
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
+        this.onCharLoading()
         this.marvelService
         .getCharacter(id)
         .then(this.onCharLoaded)
@@ -92,10 +98,7 @@ const View = ({char}) =>{
                     <div className="randomchar__info">
                         <p className="randomchar__name">{name}</p>
                         <p className="randomchar__descr">
-                            {description?.trim()
-                            ?(description.length > 200 
-                            ? description.slice(0, 200) + '...' : description) 
-                            :'no information about the character'}
+                            {description}
                         </p>
                         <div className="randomchar__btns">
                             <a href={homepage} className="button button__main">

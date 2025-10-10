@@ -41,7 +41,9 @@ class CharList extends Component{
                 : { objectFit: 'cover' };
 
             return (
-                <li className="char__item" key={ch.id}>
+
+                <li className="char__item"  key={ch.id} 
+                onClick={() => this.props.onCharSelected(ch.id)}>
                     <img style={imgStyle} src={ch.thumbnail} alt={ch.name} />
                     <div className="char__name">{ch.name}</div>
                 </li>
@@ -76,3 +78,4 @@ class CharList extends Component{
 }
 
 export default CharList;
+
