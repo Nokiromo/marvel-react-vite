@@ -7,7 +7,7 @@ import "./style/style.scss";
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <App />
-  </StrictMode>,
+  // {/* </StrictMode>, */}
 )
