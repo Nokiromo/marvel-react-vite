@@ -5,19 +5,22 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 class CharList extends Component{
+    
     state ={
         chars: [],
         loading: true,
         error: false,
         newItemLoading: false,
-        offset: 1548, 
-        charEnded: false
+        offset: 210, 
+        charEnded: false,
+        
     }
 
     componentDidMount() {
         if (!this.state.chars.length) {
             this.onRequest();
         }
+        
 }  
 
     onRequest = (offset) =>{
@@ -26,30 +29,41 @@ class CharList extends Component{
         .then(this.onCharLoaded)
         .catch(this.onError)
     }
+
     onCharListLoading = () => {
         this.setState({
             newItemLoading: true
         })
     }
 
+    itemRefs = []
+
+setRef = (ref) => {
+    if (ref) {
+        this.itemRefs.push(ref);
+    }
+}
+
+    focusOnItem = (id) => {
+        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+        this.itemRefs[id].classList.add('char__item_selected');
+        this.itemRefs[id].focus();
+    }
 
     onCharLoaded = (newChars) => {
-
-        let ended = false;
-        if (newChars.length < 9){
-            ended = true
-        }
-
-
-          this.setState(({chars, offset}) => ({
-            chars: [...chars, ...newChars],
-            loading: false,
-            newItemLoading: false,
-            offset: offset + 9,
-            charEnded: ended
-
-        }))
+    this.setState(({chars, offset}) => {
+        const ids = new Set(chars.map(c => c.id));
+        const filtered = newChars.filter(c => !ids.has(c.id));
+        return {
+        chars: [...chars, ...filtered],
+        loading: false,
+        newItemLoading: false,
+        offset: offset + filtered.length, 
+        charEnded: newChars.length < 9
+        };
+    });
     }
+
     marvelService = new MarvelService()
 
 
@@ -61,7 +75,7 @@ class CharList extends Component{
     }
 
     renderItems(chars) {
-        return chars.map((ch) => {
+        return chars.map((ch, i) => {
             const imgStyle = ch.thumbnail ===
             'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
                 ? { objectFit: 'contain' }
@@ -70,7 +84,11 @@ class CharList extends Component{
             return (
 
                 <li className="char__item"  key={ch.id} 
-                onClick={() => this.props.onCharSelected(ch.id)}>
+                 ref={this.setRef}
+                    onClick={() => {
+                        this.props.onCharSelected(ch.id);
+                        this.focusOnItem(i);
+                    }}>
                     <img style={imgStyle} src={ch.thumbnail} alt={ch.name} />
                     <div className="char__name">{ch.name}</div>
                 </li>

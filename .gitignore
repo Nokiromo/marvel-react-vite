@@ -24,5 +24,7 @@ dist-ssr
 *.sw?
 
 
-# Marvel API service (не пушити в git)
-my-app/src/services/MarvelService.jsx
+
+dist/
+.env
+.DS_Store
